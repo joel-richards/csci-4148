@@ -1,0 +1,106 @@
+---
+title: "CSCI 4148 - Practical 0"
+author: "Joel Richards"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    fig_width: 8
+    fig_height: 12
+    highlight: kate
+    theme: paper
+---
+
+```{r}
+library(tidyverse) 
+library(datasauRus)
+```
+
+## Data
+
+### Q1
+
+**Based on the help file, how many rows and how many columns does the datasaurus_dozen file have? What are the variables included in the data frame? (this can be hardcoded)**
+
+A: the data frame has 1846 rows and 3 variables.
+
+## Data Visualization and Summary
+
+```{r}
+datasaurus_dozen %>%
+  count(dataset)
+```
+
+***
+
+### Q2
+
+**Plot y vs. x for the dino dataset. Then, calculate the correlation coefficient between x and y for this dataset.**
+
+```{r}
+dino_data <- datasaurus_dozen %>%
+  filter(dataset == "dino")
+
+ggplot(data = dino_data, mapping = aes(x=x, y=y)) + geom_point()
+```
+
+***
+
+### Q3
+
+**Plot y vs. x for the star dataset. You can (and should) reuse code we introduced above, just replace the dataset name with the desired dataset. Then, calculate the correlation coefficient between x and y for this dataset. How does this value compare to the r of dino?**
+
+```{r}
+star_data <- datasaurus_dozen %>%
+  filter(dataset == "star")
+
+ggplot(data = star_data, mapping = aes(x = x, y = y)) + 
+  geom_point()
+
+dino_data %>%
+  summarise(r = cor(x, y))
+
+star_data %>%
+  summarise(r = cor(x, y))
+```
+
+A: The correlation coefficients of the dino and star datasets are similar, at -0.064 and -0.063, respetively. Both indicate a very poor linear relationship.
+
+***
+
+### Q4
+
+**Plot y vs. x for the circle dataset. You can (and should) reuse code we introduced above, just replace the dataset name with the desired dataset. Then, calculate the correlation coefficient between x and y for this dataset. How does this value compare to the r of dino?**
+
+```{r}
+star_data <- datasaurus_dozen %>%
+  filter(dataset == "circle")
+
+ggplot(data = star_data, mapping = aes(x = x, y = y)) + 
+  geom_point()
+
+star_data %>%
+  summarise(r = cor(x, y))
+```
+
+A: Again, the correlation coefficient is very low. Still on the order of 0.06.
+
+***
+
+### Q5
+
+**Finally, let’s plot all datasets at once. In order to do this we will make use of facetting.**
+
+```{r fig.height=8, fig.width=8}
+ggplot(datasaurus_dozen, aes(x=x, y=y), color=dataset) +
+  geom_point() + 
+  facet_wrap(~ dataset, ncol=3) +
+  theme(legend.position="none")
+
+datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarise(r=cor(x, y))
+  
+```
+
+
